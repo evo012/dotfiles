@@ -1,4 +1,4 @@
-# Antonio 2.
+# Antonio
 
 PROMPT=$'%{$fg_bold[black]%}
 %{$bg[cyan]%} %D{%H:%M:%S} 

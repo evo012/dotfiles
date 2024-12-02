@@ -1,3 +1,5 @@
+# Antonio 3
+
 PROMPT="%(?:$fg_bold[green]%n@%m :$fg_bold[red]%n@%m )
  $fg_bold[cyan]→ "
 PROMPT+=' %{$fg[cyan]%}%c%{$reset_color%} $(git_prompt_info)'

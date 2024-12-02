@@ -1,4 +1,4 @@
-# Antonio 2.
+# Antonio 2
 
 PROMPT=$'%{$fg[red]%}
 ╭%{$fg[red]%}[%{$fg[cyan]%}%D{%H:%M:%S}%{$fg[red]%}] [%{$fg_bold[green]%}%n@%m%{$reset_color%}%{$fg[red]%}] %{$(git_prompt_info)%}%(?,,%{$fg[red]%}[%{$fg_bold[blue]%}%?%{$reset_color%}%{$fg[red]%}])
