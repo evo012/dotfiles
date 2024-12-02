@@ -4,6 +4,7 @@ return {
 		priority = 1000,
 		dependencies = {
 			"vim-airline/vim-airline-themes",
-			"ryanoasis/vim-devicons", 
+			"nvim-tree/nvim-wevb-devicons",
+            --"ryanoasis/vim-devicons",
 		},
 }
