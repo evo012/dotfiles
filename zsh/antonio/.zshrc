@@ -8,7 +8,8 @@ export ZSH="/home/antonio/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="antonio"
+# ZSH_THEME="antonio"
+ZSH_THEME="antonio_2"
 # ZSH_THEME="antonio_3"
 # ZSH_THEME="darkblood"
 # ZSH_THEME="agnoster"
@@ -62,6 +63,7 @@ ZSH_THEME="antonio"
 # or set a custom format using the strftime function format specifications,
 # see 'man strftime' for details.
 # HIST_STAMPS="mm/dd/yyyy"
+# HIST_STAMPS="dd/mm/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
@@ -100,10 +102,10 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias zshconfig="gedit ~/.zshrc"
+alias zshconfig="nvim ~/.zshrc"
 alias ls="lsd"
 alias cat="bat"
-alias matrix="/home/antonio/.cargo/bin/rusty-rain -C green -H 255,255,255 -c jap -s"
+# alias matrix="/home/antonio/.cargo/bin/rusty-rain -C green -H 255,255,255 -c jap -s"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
