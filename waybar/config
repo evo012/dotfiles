@@ -1,15 +1,15 @@
 [{
 	"layer": "top",
-    "output": "DP-2",
+    "output": "DP-5",
     "width": 2000,
     "margin-top": 10,
     "margn-bottom": 0,
 
     //Modules layout
 
-	"modules-left": ["custom/launcher","cpu","memory","disk"],
+	"modules-left": ["custom/launcher","cpu","temperature","memory","disk"],
 	"modules-center": ["hyprland/workspaces"],
-	"modules-right": ["network","pulseaudio", "clock","custom/power"],
+	"modules-right": ["custom/updates","network","pulseaudio", "clock","custom/power"],
 	
 
     // Sourced modules
@@ -19,7 +19,9 @@
 		"scroll-step": 5,
 		"format": "{icon} {volume}%",
 		"format-muted": "{icon} {volume}%",
-		"on-click":"pactl set-sink-mute @DEFAULT_SINK@ toggle",
+		"on-click-right":"pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click":"pavucontrol",
+        "format-muted": "<span color='#7aa2f7'>󰝟 </span>",
 		"format-icons": {
 			"default": [
                 "<span color='#7aa2f7'> </span>", 
@@ -28,6 +30,7 @@
             ]
 		}
 	},
+    
     "hyprland/workspaces": {
 		"disable-scroll": true,
         "on-click": "activate",
@@ -50,32 +53,46 @@
             "persistent": "󰊠",
         },
     },
-	"network": {
+	
+    "network": {
 		"tooltip": false,
-		"format-wifi": "<span color='#9ece6a'> </span> {bandwidthDownBits}",
-		"format-ethernet": "<span color='#9ece6a'>󰲝 </span> {bandwidthDownBits}",
-        "interval": 30
+		"format-wifi": "<span color='#9ece6a'>  󰅢  </span>{bandwidthDownBytes}<span color='#9ece6a'>  󰅧  </span>{bandwidthUpBytes}",
+		"format-ethernet": "<span color='#9ece6a'>󰲝  󰅢  </span>{bandwidthDownBytes}<span color='#9ece6a'>  󰅧  </span>{bandwidthUpBytes}",
+        "interval": 1,
+        "max-length": 28,
+        "min-length": 28
 	},
-	"backlight": {
+	
+    "backlight": {
 		"tooltip": false,
 		"format": " {}%",
 		"interval":1,
         "on-scroll-up": "light -A 5",
 		"on-scroll-down": "light -U 5"
 	},
-	"clock": {
+	
+    "clock": {
         "tooltip": true,
         "interval": 60,
         "format": "{:%H:%M}",
-        "tooltip-format": "{:%Y-%m-%d}",
+        "tooltip-format": "{:%d-%m-%Y}"
     },
 
     "cpu": {
-        "interval": 15,
+        "interval": 1,
         "format": "<span color='#f7768e'> </span> {}%",
         "max-length": 10
     },
-
+    
+    "temperature": {
+        "interval": 1,
+        // "thermal-zone": 2,
+        "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        // "critical-threshold": 80,
+        // "format-critical": "{temperatureC}°C ",
+        "format": "<span color='#f7768e'> </span>{temperatureC}°C"
+    },
+    
     "disk": {
         "format": "<span color='#e0af68'> </span> {used}",
         "interval": 1,
@@ -83,7 +100,7 @@
 
     "memory": {
         "interval": 30,
-        "format": "<span color='#7dcfff'>󰫗 </span> {used}GiB",
+        "format": "<span color='#7dcfff'> </span> {used}GiB",
         "max-length": 10
     },
 
@@ -100,26 +117,32 @@
         "exec": "$HOME/.config/system_scripts/mediaplayer.py 2> /dev/null",
         "on-click": "playerctl play-pause"
     },
+    
     "custom/launcher":{
         "format": " ",
         "on-click": "rofi -show drun",
         "on-click-right": "killall rofi"
     },
+    
     "custom/power":{
         "format": "<span color='#f7768e'>⏻</span>",
-        "on-click": "q",
+        "on-click":"swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'kill -9 -1' -b 'Reboot' 'reboot' -b 'Shutdown' 'shutdown now'"
     },
+    
     "custom/updates":{
-        "format": "{} Update(s)",
-        "exec": "checkupdates | wc -l",
-        "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
-        "interval": 15,
-        "on-click": "alacritty -e paru -Syu && notify-send 'The system has been updated' "
+        "format": "{icon}{0}",
+        "return-type": "json",
+        "format-icons": {
+            "pending-updates": " ",
+            "updated": ""
+        },
+        "exec-if": "which waybar-updates",
+        "exec": "waybar-updates"
     },
 },
 {
 	"layer": "top",
-    "output": "DP-1",
+    "output": "DP-4",
     "width": 1200,
     "margin-top": 10,
     "margn-bottom": 0,
@@ -128,7 +151,7 @@
 
 	"modules-left": ["custom/launcher","cpu","memory","disk"],
 	"modules-center": ["hyprland/workspaces"],
-	"modules-right": ["network","pulseaudio", "clock","custom/power"],
+	"modules-right": ["custom/updates","network","pulseaudio", "clock","custom/power"],
 	
 
     // Sourced modules
@@ -138,7 +161,9 @@
 		"scroll-step": 5,
 		"format": "{icon} {volume}%",
 		"format-muted": "{icon} {volume}%",
-		"on-click":"pactl set-sink-mute @DEFAULT_SINK@ toggle",
+		"on-click-right":"pactl set-sink-mute @DEFAULT_SINK@ toggle",
+        "on-click":"pavucontrol",
+		"format-muted": "<span color='#7aa2f7'>󰝟 </span>",
 		"format-icons": {
 			"default": [
                 "<span color='#7aa2f7'> </span>", 
@@ -147,6 +172,7 @@
             ]
 		}
 	},
+    
     "hyprland/workspaces": {
 		"disable-scroll": true,
         "on-click": "activate",
@@ -169,28 +195,31 @@
             "persistent": "󰊠",
         },
     },
-	"network": {
+	
+    "network": {
 		"tooltip": false,
-		"format-wifi": "<span color='#9ece6a'> </span> {bandwidthDownBits}",
-		"format-ethernet": "<span color='#9ece6a'>󰲝 </span> {bandwidthDownBits}",
-        "interval": 30
+		"format-wifi": "<span color='#9ece6a'>  </span>{ipaddr}",
+		"format-ethernet": "<span color='#9ece6a'>󰲝  </span>{ipaddr}",
+        "interval": 1
 	},
-	"backlight": {
+	
+    "backlight": {
 		"tooltip": false,
 		"format": " {}%",
 		"interval":1,
         "on-scroll-up": "light -A 5",
 		"on-scroll-down": "light -U 5"
 	},
-	"clock": {
+	
+    "clock": {
         "tooltip": true,
         "interval": 60,
         "format": "{:%H:%M}",
-        "tooltip-format": "{:%Y-%m-%d}",
+        "tooltip-format": "{:%d-%m-%Y}"
     },
 
     "cpu": {
-        "interval": 15,
+        "interval": 1,
         "format": "<span color='#f7768e'> </span> {}%",
         "max-length": 10
     },
@@ -219,21 +248,27 @@
         "exec": "$HOME/.config/system_scripts/mediaplayer.py 2> /dev/null",
         "on-click": "playerctl play-pause"
     },
+    
     "custom/launcher":{
         "format": " ",
         "on-click": "rofi -show drun",
         "on-click-right": "killall rofi"
     },
+    
     "custom/power":{
         "format": "<span color='#f7768e'>⏻</span>",
-        "on-click": "q",
+        "on-click":"swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'kill -9 -1' -b 'Reboot' 'reboot' -b 'Shutdown' 'shutdown now'"
     },
+    
     "custom/updates":{
-        "format": "{} Update(s)",
-        "exec": "checkupdates | wc -l",
-        "exec-if": "[[ $(checkupdates | wc -l) != 0 ]]",
-        "interval": 15,
-        "on-click": "alacritty -e paru -Syu && notify-send 'The system has been updated' "
+        "format": "{icon}{0}",
+        "return-type": "json",
+        "format-icons": {
+            "pending-updates": " ",
+            "updated": ""
+        },
+        "exec-if": "which waybar-updates",
+        "exec": "waybar-updates"
     },
     
 }]
