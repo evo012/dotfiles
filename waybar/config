@@ -1,7 +1,8 @@
 [{
 	"layer": "top",
     "output": "DP-5",
-    "width": 2000,
+    "margin-left": 100,
+    "margin-right": 100,
     "margin-top": 10,
     "margn-bottom": 0,
 
@@ -9,7 +10,7 @@
 
 	"modules-left": ["custom/launcher","cpu","temperature","memory","disk"],
 	"modules-center": ["hyprland/workspaces"],
-	"modules-right": ["custom/updates","network","pulseaudio", "clock","custom/power"],
+	"modules-right": ["tray","custom/notification","custom/updates","bluetooth","network","pulseaudio", "clock","custom/power"],
 	
 
     // Sourced modules
@@ -23,6 +24,7 @@
         "on-click":"pavucontrol",
         "format-muted": "<span color='#7aa2f7'>󰝟 </span>",
 		"format-icons": {
+            "headphones": "  ",
 			"default": [
                 "<span color='#7aa2f7'> </span>", 
                 "<span color='#7aa2f7'> </span>", 
@@ -62,7 +64,14 @@
         "max-length": 28,
         "min-length": 28
 	},
-	
+
+    "bluetooth": {
+        "format": "<span color='#7aa2f7'></span>",
+        "format-off": "<span color='#7aa2f7'></span>",
+        "on-click": "blueberry",
+        "tooltip-format": "{status}"
+    },
+
     "backlight": {
 		"tooltip": false,
 		"format": " {}%",
@@ -80,7 +89,7 @@
 
     "cpu": {
         "interval": 1,
-        "format": "<span color='#f7768e'> </span> {}%",
+        "format": "<span color='#f7768e'> </span> {}%",
         "max-length": 10
     },
     
@@ -88,8 +97,8 @@
         "interval": 1,
         // "thermal-zone": 2,
         "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
-        // "critical-threshold": 80,
-        // "format-critical": "{temperatureC}°C ",
+        "critical-threshold": 80,
+        "format-critical": "{temperatureC}°C ",
         "format": "<span color='#f7768e'> </span>{temperatureC}°C"
     },
     
@@ -102,6 +111,11 @@
         "interval": 30,
         "format": "<span color='#7dcfff'> </span> {used}GiB",
         "max-length": 10
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 10
     },
 
     "custom/media": {
@@ -123,18 +137,46 @@
         "on-click": "rofi -show drun",
         "on-click-right": "killall rofi"
     },
-    
-    "custom/power":{
+
+    "custom/notification": {
+        "tooltip": false,
+        "format": "{icon}",
+        "format-icons": {
+            "notification": " <span foreground='red'><sup></sup></span>",
+            "none": " ",
+            "dnd-notification": " <span foreground='red'><sup></sup></span>",
+            "dnd-none": " ",
+            "inhibited-notification": " <span foreground='red'><sup></sup></span>",
+            "inhibited-none": " ",
+            "dnd-inhibited-notification": " <span foreground='red'><sup></sup></span>",
+            "dnd-inhibited-none": " "
+        },
+        "return-type": "json",
+        "exec-if": "which swaync-client",
+        "exec": "swaync-client -swb",
+        "on-click": "swaync-client -t -sw",
+        "on-click-right": "swaync-client -d -sw",
+        "escape": true
+    },
+
+    "custom/power": {
         "format": "<span color='#f7768e'>⏻</span>",
-        "on-click":"swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'kill -9 -1' -b 'Reboot' 'reboot' -b 'Shutdown' 'shutdown now'"
+		"tooltip": false,
+		"menu": "on-click",
+		"menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
+		"menu-actions": {
+			"shutdown": "shutdown now",
+			"reboot": "reboot",
+			"close_session": "kill -9 -1"
+		}
     },
     
     "custom/updates":{
         "format": "{icon}{0}",
         "return-type": "json",
         "format-icons": {
-            "pending-updates": " ",
-            "updated": ""
+            "pending-updates": "󱝯",
+            "updated": "󱝍"
         },
         "exec-if": "which waybar-updates",
         "exec": "waybar-updates"
@@ -143,7 +185,8 @@
 {
 	"layer": "top",
     "output": "DP-4",
-    "width": 1200,
+    "margin-left": 100,
+    "margin-right": 100,
     "margin-top": 10,
     "margn-bottom": 0,
 
@@ -165,6 +208,7 @@
         "on-click":"pavucontrol",
 		"format-muted": "<span color='#7aa2f7'>󰝟 </span>",
 		"format-icons": {
+			"headphones": "  ",
 			"default": [
                 "<span color='#7aa2f7'> </span>", 
                 "<span color='#7aa2f7'> </span>", 
@@ -220,7 +264,7 @@
 
     "cpu": {
         "interval": 1,
-        "format": "<span color='#f7768e'> </span> {}%",
+        "format": "<span color='#f7768e'> </span> {}%",
         "max-length": 10
     },
 
@@ -255,17 +299,24 @@
         "on-click-right": "killall rofi"
     },
     
-    "custom/power":{
+    "custom/power": {
         "format": "<span color='#f7768e'>⏻</span>",
-        "on-click":"swaynag -t warning -m 'Power Menu Options' -b 'Logout' 'kill -9 -1' -b 'Reboot' 'reboot' -b 'Shutdown' 'shutdown now'"
+		"tooltip": false,
+		"menu": "on-click",
+		"menu-file": "$HOME/.config/waybar/power_menu.xml", // Menu file in resources folder
+		"menu-actions": {
+			"shutdown": "shutdown now",
+			"reboot": "reboot",
+			"close_session": "kill -9 -1"
+		}
     },
     
     "custom/updates":{
         "format": "{icon}{0}",
         "return-type": "json",
         "format-icons": {
-            "pending-updates": " ",
-            "updated": ""
+            "pending-updates": "󱝯",
+            "updated": "󱝍"
         },
         "exec-if": "which waybar-updates",
         "exec": "waybar-updates"
