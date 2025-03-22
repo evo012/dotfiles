@@ -97,11 +97,13 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias zshconfig="gedit ~/.zshrc"
-alias ls="lsd"
-alias cat="bat"
-alias matrix="/home/antonio/.cargo/bin/rusty-rain -C green -H 255,255,255 -c jap -s"
+alias zshconfig="nvim ~/.zshrc" 
+alias ls="lsd" 
+alias cat="bat" 
+alias c="clear" 
+alias e="exit" 
+# alias matrix="/home/antonio/.cargo/bin/rusty-rain -C green -H 255,255,255 -c jap -s" 
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm" 
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm 
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion 
