@@ -1,88 +1,136 @@
 return {
-  "nvim-treesitter/nvim-treesitter",
-  build = ":TSUpdate",
+  'nvim-treesitter/nvim-treesitter',
   dependencies = {
-    "nvim-treesitter/nvim-treesitter-textobjects",
-  },
-  event = "VeryLazy",
-  main = "nvim-treesitter.configs",
-  opts = {
-    ensure_installed = {
-      "bash",
-      "blade",
-      "css",
-      "go",
-      "gomod",
-      "html",
-      "javascript",
-      "json",
-      "java",
-      "lua",
-      "luadoc",
-      "markdown",
-      "markdown_inline",
-      "nix",
-      "org",
-      "php",
-      "phpdoc",
-      "python",
-      "query",
-      "rust",
-      "sql",
-      "svelte",
-      "typescript",
-      "regex",
-      "vim",
-      "yaml",
-    },
-    highlight = {
-      enable = true,
-      additional_vim_regex_highlighting = { "org" },
-    },
-    indent = {
-      enable = true,
-    },
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true,
-        keymaps = {
-          ["af"] = "@function.outer",
-          ["if"] = "@function.inner",
-          ["ac"] = "@conditional.outer",
-          ["ic"] = "@conditional.inner",
-          ["al"] = "@loop.outer",
-          ["il"] = "@loop.inner",
-        },
-      },
-    },
-    incremental_selection = {
-      enable = true,
-      keymaps = {
-        init_selection = "gnn",
-        node_incremental = "grn",
-        scope_incremental = "grc",
-        node_decremental = "grm",
+    {
+      'nvim-treesitter/nvim-treesitter-context',
+      opts = {
+        max_lines = 4,
+        multiline_threshold = 2,
       },
     },
   },
-  config = function(plug, config)
-    local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-    parser_config.blade = {
-      install_info = {
-        url = "https://github.com/EmranMR/tree-sitter-blade",
-        files = {"src/parser.c"},
-        branch = "main",
-      },
-      filetype = "blade"
-    }
+  lazy = false,
+  branch = 'main',
+  build = ':TSUpdate',
+  config = function()
+    local ts = require('nvim-treesitter')
 
-    vim.filetype.add({
-      pattern = {
-        ['.*%.blade%.php'] = 'blade',
-      }
+    -- State tracking for async parser loading
+    local parsers_loaded = {}
+    local parsers_pending = {}
+    local parsers_failed = {}
+
+    local ns = vim.api.nvim_create_namespace('treesitter.async')
+
+    -- Helper to start highlighting and indentation
+    local function start(buf, lang)
+      local ok = pcall(vim.treesitter.start, buf, lang)
+      if ok then
+        vim.bo[buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+      end
+      return ok
+    end
+
+    -- Install core parsers after lazy.nvim finishes loading all plugins
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'LazyDone',
+      once = true,
+      callback = function()
+        ts.install({
+          'bash',
+          'comment',
+          'css',
+          'diff',
+          'fish',
+          'git_config',
+          'git_rebase',
+          'gitcommit',
+          'gitignore',
+          'html',
+          'javascript',
+          'json',
+          'latex',
+          'lua',
+          'luadoc',
+          'make',
+          'markdown',
+          'markdown_inline',
+          'python',
+          'query',
+          'regex',
+          'scss',
+          'svelte',
+          'toml',
+          'tsx',
+          'typescript',
+          'typst',
+          'vim',
+          'vimdoc',
+          'vue',
+          'xml',
+        }, {
+          max_jobs = 8,
+        })
+      end,
     })
 
-    require(plug.main).setup(config);
+    -- Decoration provider for async parser loading
+    vim.api.nvim_set_decoration_provider(ns, {
+      on_start = vim.schedule_wrap(function()
+        if #parsers_pending == 0 then
+          return false
+        end
+        for _, data in ipairs(parsers_pending) do
+          if vim.api.nvim_buf_is_valid(data.buf) then
+            if start(data.buf, data.lang) then
+              parsers_loaded[data.lang] = true
+            else
+              parsers_failed[data.lang] = true
+            end
+          end
+        end
+        parsers_pending = {}
+      end),
+    })
+
+    local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
+
+    local ignore_filetypes = {
+      'checkhealth',
+      'lazy',
+      'mason',
+      'snacks_dashboard',
+      'snacks_notif',
+      'snacks_win',
+    }
+
+    -- Auto-install parsers and enable highlighting on FileType
+    vim.api.nvim_create_autocmd('FileType', {
+      group = group,
+      desc = 'Enable treesitter highlighting and indentation (non-blocking)',
+      callback = function(event)
+        if vim.tbl_contains(ignore_filetypes, event.match) then
+          return
+        end
+
+        local lang = vim.treesitter.language.get_lang(event.match) or event.match
+        local buf = event.buf
+
+        if parsers_failed[lang] then
+          return
+        end
+
+        if parsers_loaded[lang] then
+          -- Parser already loaded, start immediately (fast path)
+          start(buf, lang)
+        else
+          -- Queue for async loading
+          table.insert(parsers_pending, { buf = buf, lang = lang })
+        end
+
+        -- Auto-install missing parsers (async, no-op if already installed)
+        ts.install({ lang })
+      end,
+    })
   end,
 }
