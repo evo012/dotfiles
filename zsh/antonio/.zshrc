@@ -110,7 +110,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias zshconfig="nvim ~/.zshrc"
-alias ls="lsd"
+alias ls="lsd --group-dirs first"
 alias cat="bat"
 alias c="clear"
 alias e="exit"
@@ -119,3 +119,11 @@ alias e="exit"
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Added by LM Studio CLI tool (lms)
+export PATH="$PATH:/home/antonio/.lmstudio/bin"
+export PATH="$HOME/.local/bin:$PATH"
+
+# Editor por defecto
+export EDITOR=nvim
+
